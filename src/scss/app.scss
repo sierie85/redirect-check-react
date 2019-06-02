@@ -1,0 +1,40 @@
+@import "~bootstrap/scss/bootstrap.scss";
+
+html,
+body {
+  font-family: "Raleway", sans-serif;
+}
+
+.container {
+  max-width: 960px;
+}
+
+.statement {
+  background: #f78376;
+  color: #fff;
+  text-shadow: 1px 1px #e83e8c;
+}
+
+.form-container {
+  .file-container {
+    padding: 20px;
+    border: 2px dashed rgba(247, 131, 118, 0.5);
+    text-align: center;
+    min-height: 10rem;
+  }
+  .input-domain {
+    border: 2px dashed rgba(247, 131, 118, 0.5);
+  }
+  .btn-redirect {
+    background: #f78376;
+    color: #fff;
+    text-transform: uppercase;
+    box-shadow: 0px 1px 5px #333;
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+.results-box {
+  max-height: 30rem;
+  overflow-y: scroll;
+}
