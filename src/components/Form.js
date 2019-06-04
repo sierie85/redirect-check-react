@@ -1,5 +1,15 @@
 import React, { Component } from "react";
 import Dropzone from "react-dropzone";
+import Papa from "papaparse";
+import ResultsSuccess from "./ResultsSuccess";
+import ResultsError from "./ResultsError";
+
+const awaitPapa = async file => {
+  const papaPromise = new Promise((complete, error) =>
+    Papa.parse(file, { header: true, skipEmptyLines: true, complete, error })
+  );
+  return await papaPromise.then(parsedData => parsedData);
+};
 
 class Form extends Component {
   constructor(props) {
@@ -9,29 +19,52 @@ class Form extends Component {
     };
     this.state = {
       domain: "",
-      files: []
+      files: [],
+      results: [],
+      currentTest: 0,
+      maxTest: 0
     };
   }
-  handleSubmit(e) {
+  async awaitRedirectCheck(domain, start, ziel) {
+    const rawResponse = await fetch(
+      "https://redirect-tool.herokuapp.com/check-redirect",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ domain, start, ziel })
+      }
+    );
+    const response = await rawResponse.json();
+    this.setState({
+      results: [...this.state.results, response]
+    });
+  }
+  async handleSubmit(e) {
     e.preventDefault();
 
     const domain = this.state.domain;
-    const file = this.state.files;
-    const formData = new FormData();
-    formData.append("domain", domain);
-    formData.append("csv", file[0]);
-
-    fetch("http://localhost:8000/csv", {
-      method: "POST",
-      mode: "cors",
-      // headers: {
-      //   "Content-Type": "application/x-www-form-urlencoded"
-      // },
-      body: formData
-    })
-      .then(res => res.json())
-      .then(data => console.log(data))
-      .catch(err => console.log(err));
+    const fileInput = this.state.files;
+    const redirectJson = await awaitPapa(fileInput[0]);
+    const redirectData = redirectJson.data;
+    this.setState({
+      maxTest: redirectData.length
+    });
+    let counter = 0;
+    const i = setInterval(() => {
+      this.setState({ currentTest: this.state.currentTest + 1 });
+      this.awaitRedirectCheck(
+        domain,
+        redirectData[counter].START,
+        redirectData[counter].ZIEL
+      );
+      counter++;
+      if (counter === redirectData.length) {
+        clearInterval(i);
+      }
+    }, 2000);
   }
   handleDomain(e) {
     const value = e.currentTarget.value;
@@ -47,7 +80,10 @@ class Form extends Component {
     ));
     return (
       <div className="container form-container">
-        <form onSubmit={this.handleSubmit.bind(this)}>
+        <form
+          onSubmit={this.handleSubmit.bind(this)}
+          className={this.state.results.length > 0 ? "disable" : "enable"}
+        >
           <div className="form-group">
             <input
               onChange={this.handleDomain.bind(this)}
@@ -55,7 +91,6 @@ class Form extends Component {
               className="form-control form-control-lg input-domain"
               id="domain"
               name="domain"
-              aria-describedby="emailHelp"
               placeholder="http://yourdomain.com"
             />
           </div>
@@ -79,6 +114,38 @@ class Form extends Component {
             </button>
           </div>
         </form>
+        <div
+          className={`container results-box ${
+            this.state.results.length > 0 ? "enable" : "disable"
+          }`}
+        >
+          <ul className="list-group list-group-flush">
+            {this.state.results.map((ele, index) => {
+              if (ele.error) {
+                return (
+                  <ResultsError
+                    key={index}
+                    url={ele.error.url}
+                    redirect={ele.error.redirect}
+                    message={ele.error.message}
+                  />
+                );
+              } else {
+                return (
+                  <ResultsSuccess
+                    key={index}
+                    url={ele.url}
+                    redirect={ele.redirect}
+                    status={ele.status}
+                  />
+                );
+              }
+            })}
+          </ul>
+          <p>
+            Redirects Tested: {this.state.currentTest}/{this.state.maxTest}
+          </p>
+        </div>
       </div>
     );
   }
