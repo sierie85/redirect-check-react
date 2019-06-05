@@ -13,14 +13,24 @@ body {
   background: #f78376;
   color: #fff;
   text-shadow: 1px 1px #e83e8c;
+  h2 {
+    letter-spacing: 1px;
+    font-weight: 800;
+  }
+}
+
+.jumbotron {
+  padding: 3em 2em;
 }
 
 .form-container {
   .file-container {
-    padding: 20px;
+    padding: 2rem;
     border: 2px dashed rgba(247, 131, 118, 0.5);
     text-align: center;
-    min-height: 10rem;
+    p {
+      margin: 0;
+    }
   }
   .input-domain {
     border: 2px dashed rgba(247, 131, 118, 0.5);
@@ -35,8 +45,15 @@ body {
 }
 
 .results-box {
-  max-height: 30rem;
-  overflow-y: scroll;
+  .list-group {
+    max-height: 20rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: 2px dashed rgba(247, 131, 118, 0.5);
+  }
+  .list-group-item {
+    border-bottom: 1px dashed rgba(247, 131, 118, 0.5);
+  }
 }
 
 .enable {

@@ -22,10 +22,11 @@ class Form extends Component {
       files: [],
       results: [],
       currentTest: 0,
-      maxTest: 0
+      maxTest: 0,
+      progress: 0
     };
   }
-  async awaitRedirectCheck(domain, start, ziel) {
+  async awaitRedirectCheck(domain, resource, redirect) {
     const rawResponse = await fetch(
       "https://redirect-tool.herokuapp.com/check-redirect",
       {
@@ -34,12 +35,13 @@ class Form extends Component {
           Accept: "application/json",
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ domain, start, ziel })
+        body: JSON.stringify({ domain, resource, redirect })
       }
     );
     const response = await rawResponse.json();
     this.setState({
-      results: [...this.state.results, response]
+      results: [...this.state.results, response],
+      progress: Math.ceil(this.state.currentTest / this.state.maxTest) * 100
     });
   }
   async handleSubmit(e) {
@@ -49,22 +51,27 @@ class Form extends Component {
     const fileInput = this.state.files;
     const redirectJson = await awaitPapa(fileInput[0]);
     const redirectData = redirectJson.data;
+    const dataLen = redirectData.length;
+
     this.setState({
-      maxTest: redirectData.length
+      maxTest: dataLen
     });
+
     let counter = 0;
     const i = setInterval(() => {
-      this.setState({ currentTest: this.state.currentTest + 1 });
+      this.setState({
+        currentTest: this.state.currentTest + 1
+      });
       this.awaitRedirectCheck(
         domain,
-        redirectData[counter].START,
-        redirectData[counter].ZIEL
+        redirectData[counter].RESOURCE,
+        redirectData[counter].REDIRECT
       );
       counter++;
-      if (counter === redirectData.length) {
+      if (counter === dataLen) {
         clearInterval(i);
       }
-    }, 2000);
+    }, 3000);
   }
   handleDomain(e) {
     const value = e.currentTarget.value;
@@ -74,9 +81,7 @@ class Form extends Component {
   }
   render() {
     const files = this.state.files.map(file => (
-      <li key={file.name}>
-        {file.name} - {file.size} bytes
-      </li>
+      <p key={file.name}>{file.name}</p>
     ));
     return (
       <div className="container form-container">
@@ -96,15 +101,20 @@ class Form extends Component {
           </div>
           <Dropzone onDrop={this.onDrop}>
             {({ getRootProps, getInputProps }) => (
-              <section className="container file-container">
-                <div {...getRootProps({ className: "dropzone" })}>
+              <section className="container p-0">
+                <div
+                  {...getRootProps({
+                    className: "dropzone file-container"
+                  })}
+                >
                   <input {...getInputProps()} />
-                  <p>Drag 'n' drop your *.csv file with the redirects here.</p>
+                  <p>
+                    {files.length === 0
+                      ? `Drag 'n' drop your *.csv file with
+                    the redirects here.`
+                      : files}
+                  </p>
                 </div>
-                <aside>
-                  <h4>Files</h4>
-                  <ul>{files}</ul>
-                </aside>
               </section>
             )}
           </Dropzone>
@@ -119,32 +129,49 @@ class Form extends Component {
             this.state.results.length > 0 ? "enable" : "disable"
           }`}
         >
+          <div className="d-flex align-items-center justify-content-between">
+            <h2 className="m-0">Results</h2>
+            <p className="m-0">
+              Redirects Tested: {this.state.currentTest}/{this.state.maxTest}
+            </p>
+          </div>
           <ul className="list-group list-group-flush">
             {this.state.results.map((ele, index) => {
               if (ele.error) {
                 return (
                   <ResultsError
                     key={index}
+                    domain={this.state.domain}
                     url={ele.error.url}
                     redirect={ele.error.redirect}
                     message={ele.error.message}
+                    statusCode={ele.error.statusCode}
                   />
                 );
               } else {
                 return (
                   <ResultsSuccess
                     key={index}
+                    domain={this.state.domain}
                     url={ele.url}
                     redirect={ele.redirect}
-                    status={ele.status}
+                    statusCode={ele.status}
+                    chain={ele.chain}
                   />
                 );
               }
             })}
           </ul>
-          <p>
-            Redirects Tested: {this.state.currentTest}/{this.state.maxTest}
-          </p>
+          <div className="progress mt-1">
+            <div
+              className="progress-bar progress-bar-striped progress-bar-animated bg-success"
+              role="progressbar"
+              style={{ width: `${this.state.progress}%` }}
+              aria-valuenow="25"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            />
+          </div>
         </div>
       </div>
     );
