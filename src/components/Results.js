@@ -1,5 +1,6 @@
 import React from "react";
 import Result from "./Result";
+import { ReactComponent as TestIcon } from "../icons/test.svg";
 
 const Results = props => {
   return (
@@ -38,8 +39,12 @@ const Results = props => {
           props.progress < 100 ? "d-none" : "d-flex"
         } justify-content-center mt-3`}
       >
-        <button onClick={props.reset} className="btn btn-outline-info">
-          New Test
+        <button
+          onClick={props.reset}
+          className="btn btn-outline-info d-flex justify-content-center"
+        >
+          <span className="mr-3">New Test</span>
+          <TestIcon />
         </button>
       </div>
     </div>

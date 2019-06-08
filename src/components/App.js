@@ -46,7 +46,9 @@ class App extends Component {
   async handleSubmit(e) {
     e.preventDefault();
 
-    const domain = this.state.domain;
+    const domain = this.state.domain.endsWith("/")
+      ? this.state.domain.slice(0, -1)
+      : this.state.domain;
     const fileInput = this.state.files;
     const redirectJson = await awaitPapa(fileInput[0]);
     const redirectData = redirectJson.data;

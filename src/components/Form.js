@@ -1,5 +1,6 @@
 import React from "react";
 import Dropzone from "react-dropzone";
+import { ReactComponent as TestIcon } from "../icons/test.svg";
 
 const Form = props => {
   const files = props.files.map(file => <p key={file.name}>{file.name}</p>);
@@ -42,12 +43,13 @@ const Form = props => {
       <div className="d-flex justify-content-center m-3">
         <button
           type="submit"
-          className="btn btn-redirect btn-lg"
+          className="btn btn-redirect btn-lg d-flex justify-content-center"
           disabled={
             props.files.length > 0 && props.domain.length > 0 ? false : true
           }
         >
-          Start Test
+          <span className="mr-3">Start Test</span>
+          <TestIcon />
         </button>
       </div>
     </form>
