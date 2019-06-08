@@ -9,8 +9,7 @@ const awaitPapa = async file => {
 
 const redirectCheck = async (domain, resource, redirect) => {
   const rawResponse = await fetch(
-    "http://localhost:5000/check-redirect",
-    // "https://redirect-tool.herokuapp.com/check-redirect",
+    "https://redirect-tool.herokuapp.com/check-redirect",
     {
       method: "POST",
       headers: {
