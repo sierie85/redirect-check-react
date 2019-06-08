@@ -1,11 +1,16 @@
 import React from "react";
 
-const Header = () => {
+const Header = props => {
   return (
     <div className="jumbotron jumbotron-fluid statement">
       <div className="container">
-        <h1 className="display-4 border-bottom mb-2">TestYourRedirects</h1>
-        <div className="row intro-text m-0">
+        <h1
+          className="display-4 border-bottom mb-2 cursor-pointer"
+          onClick={props.reset}
+        >
+          TestYourRedirects
+        </h1>
+        <div className={`row intro-text m-0 ${props.showInfo}`}>
           <div className="col-md-6 col-12">
             <h2>Instructions</h2>
 

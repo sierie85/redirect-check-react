@@ -46,7 +46,8 @@ body {
 
 .results-box {
   .list-group {
-    max-height: 20rem;
+    height: 50vh;
+    max-height: 50vh;
     overflow-y: scroll;
     overflow-x: hidden;
     border: 2px dashed rgba(247, 131, 118, 0.5);
@@ -61,4 +62,7 @@ body {
 }
 .disable {
   display: none;
+}
+.cursor-pointer {
+  cursor: pointer;
 }
