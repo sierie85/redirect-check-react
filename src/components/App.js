@@ -33,8 +33,15 @@ class App extends Component {
       domain: value
     });
   }
-  onDrop = files => {
-    this.setState({ files });
+  onupdatefiles = fileItems => {
+    this.setState({
+      files: fileItems.map(fileItem => fileItem.file)
+    });
+  };
+  onaddfilestart = file => {
+    if (file.fileExtension !== "csv") {
+      file.abortLoad();
+    }
   };
   async awaitRedirectCheck(domain, resource, redirect) {
     const response = await redirectCheck(domain, resource, redirect);
@@ -86,7 +93,8 @@ class App extends Component {
             status={this.state.maxTest > 0 ? "disable" : "enable"}
             handleSubmit={this.handleSubmit.bind(this)}
             handleDomain={this.handleDomain.bind(this)}
-            onDrop={this.onDrop.bind(this)}
+            onupdatefiles={this.onupdatefiles.bind(this)}
+            onaddfilestart={this.onaddfilestart.bind(this)}
             files={this.state.files}
             domain={this.state.domain}
           />

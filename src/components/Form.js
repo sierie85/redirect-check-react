@@ -1,9 +1,8 @@
 import React from "react";
-import Dropzone from "react-dropzone";
+import { FilePond } from "react-filepond";
 import { ReactComponent as TestIcon } from "../icons/test.svg";
 
 const Form = props => {
-  const files = props.files.map(file => <p key={file.name}>{file.name}</p>);
   return (
     <form
       onSubmit={props.handleSubmit}
@@ -21,25 +20,17 @@ const Form = props => {
           placeholder="http://yourdomain.com"
         />
       </div>
-      <Dropzone onDrop={props.onDrop}>
-        {({ getRootProps, getInputProps }) => (
-          <section className="container p-0">
-            <div
-              {...getRootProps({
-                className: "dropzone file-container"
-              })}
-            >
-              <input {...getInputProps()} />
-              <div>
-                {files.length === 0
-                  ? `Drag 'n' drop your *.csv file with
-                    the redirects here.`
-                  : files}
-              </div>
-            </div>
-          </section>
-        )}
-      </Dropzone>
+      <div className="form-group">
+        <FilePond
+          className="file-container"
+          files={props.files}
+          allowMultiple={false}
+          maxFiles={1}
+          onupdatefiles={props.onupdatefiles}
+          onaddfilestart={props.onaddfilestart}
+          labelIdle="Drag and Drop your *.csv file with the redirects here."
+        />
+      </div>
       <div className="d-flex justify-content-center m-3">
         <button
           type="submit"

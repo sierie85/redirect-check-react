@@ -41,7 +41,7 @@ const Results = props => {
       >
         <button
           onClick={props.reset}
-          className="btn btn-outline-info d-flex justify-content-center"
+          className="btn btn-info d-flex justify-content-center align-items-center"
         >
           <span className="mr-3">New Test</span>
           <TestIcon />
