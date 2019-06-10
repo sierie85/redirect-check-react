@@ -1,5 +1,20 @@
 @import "~bootstrap/scss/bootstrap.scss";
 
+/* raleway-regular - latin */
+@font-face {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/raleway-v13-latin-regular.eot");
+  src: local("Raleway"), local("Raleway-Regular"),
+    url("../fonts/raleway-v13-latin-regular.eot?#iefix")
+      format("embedded-opentype"),
+    url("../fonts/raleway-v13-latin-regular.woff2") format("woff2"),
+    url("../fonts/raleway-v13-latin-regular.woff") format("woff"),
+    url("../fonts/raleway-v13-latin-regular.ttf") format("truetype"),
+    url("../fonts/raleway-v13-latin-regular.svg#Raleway") format("svg");
+}
+
 html,
 body {
   font-family: "Raleway", sans-serif;
