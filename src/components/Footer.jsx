@@ -1,9 +1,13 @@
-import React from "react";
-import { ReactComponent as GithubIcon } from "../icons/github.svg";
+import GithubIcon from "../assets/icons/github.svg?react";
 
-const Footer = () => {
+/**
+ * Footer component for the application.
+ *
+ * @returns {JSX.Element} The rendered Footer component.
+ */
+export default function Footer() {
   return (
-    <footer className="footer mt-auto py-3 fixed-bottom">
+    <footer className="footer mt-auto py-3 fixed-bottom bg-white border border-bottom-0">
       <div className="container d-flex justify-content-between">
         <span className="text-muted">Only for demonastration purposes</span>
         <span className="text-muted">
@@ -28,6 +32,4 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}
